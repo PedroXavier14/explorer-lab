@@ -7,6 +7,7 @@ const ccBgColor02 = document.querySelector(".cc-bg svg > g g:nth-child(2) path")
 const ccLogo = document.querySelector(".cc-logo span:nth-child(2) img")
 
 const setCardType = (type) => {
+  console.log(type)
   const colors = {
     visa: ["#2D57F2", "#436D99"],
     mastercard: ["#C69347", "#DF6F29"],
@@ -48,12 +49,13 @@ const expirationDatePattern = {
 
 const expirationDateMasked = IMask(expirationDate, expirationDatePattern)
 
+// CardNumber
 const cardNumber = document.querySelector("#card-number")
 const cardNumberPattern = {
   mask: [
     {
       mask: "0000 0000 0000 0000",
-      regex: /4\d{0-15}/,
+      regex: /^4\d{0,15}/,
       cardType: "visa",
     },
     {
@@ -74,3 +76,40 @@ const cardNumberPattern = {
 }
 
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern)
+
+const addButton = document.querySelector("#add-card")
+
+addButton.addEventListener("click", () => {
+  alert("Cartão adicionado!")
+})
+
+document.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault()
+})
+
+const cardHolder = document.querySelector("#card-holder")
+cardHolder.addEventListener("input", () => {
+  const ccHolder = document.querySelector(".cc-holder .value")
+  ccHolder.innerText =
+    cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value
+})
+
+securityCodeMasked.on("accept", () => {
+  const { value } = securityCodeMasked
+  const ccSecurity = document.querySelector(".cc-security .value")
+  ccSecurity.innerText = value.length === 0 ? "123" : value
+})
+
+cardNumberMasked.on("accept", () => {
+  const { value } = cardNumberMasked
+  const { cardType } = cardNumberMasked.masked.currentMask
+  const ccNumber = document.querySelector(".cc-number")
+  setCardType(cardType)
+  ccNumber.innerText = value.length === 0 ? "1234 5678 9012 3456" : value
+})
+
+expirationDateMasked.on("accept", () => {
+  const { value } = expirationDateMasked
+  const ccExpiration = document.querySelector(".cc-extra .value")
+  ccExpiration.innerText = value.length === 0 ? "02/32" : value
+})
